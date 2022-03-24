@@ -1,1 +1,9 @@
 *.class
+.*.sw[a-z]
+.nfs*
+*.test.*
+.gitignore
+run_all_tests.sh
+partial_test.sh
+MyTest*.java
+docs/
