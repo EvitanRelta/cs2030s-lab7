@@ -4,7 +4,7 @@ clear
 DIVIDER="\n$(seq -s= $(tput cols - 1) | tr -d '[:digit:]')\n"
 printf "$DIVIDER[Compiling 'cs2030s.fp']\n"; javac -Xlint:rawtypes,unchecked ./cs2030s/fp/*.java
 printf "$DIVIDER[Compiling + Running 'Test1']\n"; javac -Xlint:rawtypes,unchecked Test1.java; java Test1
-# printf "$DIVIDER[Compiling + Running 'Test2']\n"; javac -Xlint:rawtypes,unchecked Test2.java; java Test2
+printf "$DIVIDER[Compiling + Running 'Test2']\n"; javac -Xlint:rawtypes,unchecked Test2.java; java Test2
 # printf "$DIVIDER[Compiling + Running 'Test3']\n"; javac -Xlint:rawtypes,unchecked Test3.java; java Test3
 # printf "$DIVIDER[Compiling + Running 'Test4']\n"; javac -Xlint:rawtypes,unchecked Test4.java; java Test4
 

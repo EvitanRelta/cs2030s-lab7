@@ -84,7 +84,8 @@ public class InfiniteList<T> {
    * @return The evaluated head value.
    */
   public T head() {
-    return this.head.get().get();
+    return this.head.get()
+        .orElseGet(() -> this.tail().head());
   }
 
   /**
@@ -93,12 +94,24 @@ public class InfiniteList<T> {
    * @return The evaluated tail value.
    */
   public InfiniteList<T> tail() {
-    return this.tail.get();
+    return this.head.get().equals(Maybe.none())
+        ? this.tail.get().tail()
+        : this.tail.get();
   }
 
+  /**
+   * Returns a new InfiniteList that has the 'mapper' Transformer applied to all
+   * elements.
+   *
+   * @param <R> The value type of the returned InfiniteList.
+   * @param mapper The Transformer that will be applied.
+   * @return The new InfiniteList that has 'mapper' applied to all its elements.
+   */
   public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) {
-    // TODO
-    return new InfiniteList<>();
+    return new InfiniteList<>(
+          this.head.map(x -> x.map(mapper)),
+          this.tail.map(x -> x.map(mapper))
+        );
   }
 
   public InfiniteList<T> filter(BooleanCondition<? super T> predicate) {
