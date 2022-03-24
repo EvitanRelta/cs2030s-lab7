@@ -55,6 +55,11 @@ public abstract class Maybe<T> {
     public Object orElseGet(Producer<? extends Object> producer) {
       return producer.produce();
     }
+
+    @Override
+    public void consumeWith(Consumer<? super Object> consumer) {
+
+    }
   }
 
   private static class Some<T> extends Maybe<T> {
@@ -117,6 +122,11 @@ public abstract class Maybe<T> {
     public T orElseGet(Producer<? extends T> producer) {
       return this.get();
     }
+
+    @Override
+    public void consumeWith(Consumer<? super T> consumer) {
+      consumer.consume(this.get());
+    }
   }
 
   public static <T> Maybe<T> none() {
@@ -148,4 +158,12 @@ public abstract class Maybe<T> {
   public abstract T orElse(T elseValue);
 
   public abstract T orElseGet(Producer<? extends T> producer);
+
+  /**
+   * If the value within this Maybe is missing, do nothing. 
+   * Otherwise, consume the value with the given consumer.
+   *
+   * @param consumer The consumer to consume the value 
+   */
+  public abstract void consumeWith(Consumer<? super T> consumer);
 }
