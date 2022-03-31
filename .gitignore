@@ -7,3 +7,4 @@ run_all_tests.sh
 partial_test.sh
 MyTest*.java
 docs/
+LoadCs2030sFp.jsh
