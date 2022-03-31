@@ -85,7 +85,7 @@ public class InfiniteList<T> {
    */
   public T head() {
     return this.head.get()
-        .orElseGet(() -> this.tail().head());
+        .orElseGet(() -> this.tail.get().head());
   }
 
   /**
@@ -115,9 +115,18 @@ public class InfiniteList<T> {
         );
   }
 
+  /**
+   * Returns a new InfiniteList with all elements not satisfying the
+   * 'predicate' replaced with Maybe.none().
+   *
+   * @param predicate The predicate function to filter the elements by.
+   * @return The new InfiniteList with elements failing the 'predicate' replaced with Maybe.none().
+   */
   public InfiniteList<T> filter(BooleanCondition<? super T> predicate) {
-    // TODO
-    return new InfiniteList<>();
+    return new InfiniteList<>(
+          this.head.map(x -> x.filter(predicate)),
+          this.tail.map(x -> x.filter(predicate))
+        );
   }
 
   public static <T> InfiniteList<T> sentinel() {
