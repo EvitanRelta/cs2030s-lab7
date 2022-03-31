@@ -219,14 +219,42 @@ public class InfiniteList<T> {
     return false;
   }
 
+  /**
+   * Reduces all elements to a single value of type 'U' by combining them
+   * using 'accumulator'.
+   *
+   * @param <U> Return value type.
+   * @param identity Initial value.
+   * @param accumulator Binary function for combining the elements.
+   * @return The value obtained by combining all the elements.
+   */
   public <U> U reduce(U identity, Combiner<U, ? super T, U> accumulator) {
-    // TODO
-    return null;
+    return this.tail()
+        .reduce(
+            accumulator.combine(identity, this.head()),
+            accumulator
+        );
   }
 
+  /**
+   * Returns the number of elements in the InfiniteList.
+   *
+   * @return The number of elements.
+   */
   public long count() {
-    // TODO
-    return 0;
+    int output = 0;
+
+    try {
+      InfiniteList<T> curr = this;
+      while (!curr.isSentinel()) {
+        output++;
+        curr = curr.tail();
+      }
+    } catch (Exception e) {
+      output--;
+    }
+
+    return output;
   }
 
   /**
@@ -340,6 +368,30 @@ public class InfiniteList<T> {
     @Override
     public InfiniteList<Object> takeWhile(BooleanCondition<Object> predicate) {
       return this;
+    }
+
+    /**
+     * Always returns 'identity', as sentinels don't have any elements.
+     *
+     * @param <U> Return value type.
+     * @param identity Initial value.
+     * @param accumulator Binary function for combining the elements.
+     * @return The 'identity' param.
+     */
+    @Override
+    public <U> U reduce(U identity, Combiner<U, Object, U> accumulator) {
+      return identity;
+    }
+
+    /**
+     * Returns the number of elements in the InfiniteList, which is always
+     * zero, as sentinels don't have elements.
+     *
+     * @return 0.
+     */
+    @Override
+    public long count() {
+      return 0;
     }
 
     /**

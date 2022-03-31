@@ -16,8 +16,8 @@ printf "$DIVIDER[Compiling + Running 'Test4']\n"
 javac -Xlint:rawtypes,unchecked Test4.java; java Test4 | grep failed
 printf "$DIVIDER[Compiling + Running 'Test5']\n"
 javac -Xlint:rawtypes,unchecked Test5.java; java Test5 | grep failed
-# printf "$DIVIDER[Compiling + Running 'Test6']\n"
-# javac -Xlint:rawtypes,unchecked Test6.java; java Test6 | grep failed
+printf "$DIVIDER[Compiling + Running 'Test6']\n"
+javac -Xlint:rawtypes,unchecked Test6.java; java Test6 | grep failed
 
 # Check style
 printf "$DIVIDER[Checking styles - 'cs2030s.fp.InfiniteList']\n"; java -jar ~cs2030s/bin/checkstyle.jar -c ~cs2030s/bin/cs2030_checks.xml cs2030s/fp/InfiniteList.java;
