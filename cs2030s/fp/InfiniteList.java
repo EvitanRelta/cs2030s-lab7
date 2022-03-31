@@ -56,9 +56,9 @@ public class InfiniteList<T> {
    */
   public static <T> InfiniteList<T> generate(Producer<T> producer) {
     return new InfiniteList<>(
-          Lazy.of(() -> Maybe.some(producer.produce())),
-          Lazy.of(() -> InfiniteList.generate(producer))
-        );
+        Lazy.of(() -> Maybe.some(producer.produce())),
+        Lazy.of(() -> InfiniteList.generate(producer))
+    );
   }
 
   /**
@@ -73,9 +73,9 @@ public class InfiniteList<T> {
    */
   public static <T> InfiniteList<T> iterate(T seed, Transformer<T, T> next) {
     return new InfiniteList<>(
-          seed,
-          () -> InfiniteList.iterate(next.transform(seed), next)
-        );
+        seed,
+        () -> InfiniteList.iterate(next.transform(seed), next)
+    );
   }
 
   /**
@@ -110,9 +110,9 @@ public class InfiniteList<T> {
    */
   public <R> InfiniteList<R> map(Transformer<? super T, ? extends R> mapper) {
     return new InfiniteList<>(
-          this.head.map(x -> x.map(mapper)),
-          this.tail.map(x -> x.map(mapper))
-        );
+        this.head.map(x -> x.map(mapper)),
+        this.tail.map(x -> x.map(mapper))
+    );
   }
 
   /**
@@ -124,9 +124,9 @@ public class InfiniteList<T> {
    */
   public InfiniteList<T> filter(BooleanCondition<? super T> predicate) {
     return new InfiniteList<>(
-          this.head.map(x -> x.filter(predicate)),
-          this.tail.map(x -> x.filter(predicate))
-        );
+        this.head.map(x -> x.filter(predicate)),
+        this.tail.map(x -> x.filter(predicate))
+    );
   }
 
   public static <T> InfiniteList<T> sentinel() {
