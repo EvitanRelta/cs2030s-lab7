@@ -12,8 +12,8 @@ printf "$DIVIDER[Compiling + Running 'Test2']\n"
 javac -Xlint:rawtypes,unchecked Test2.java; java Test2 | grep failed
 printf "$DIVIDER[Compiling + Running 'Test3']\n"
 javac -Xlint:rawtypes,unchecked Test3.java; java Test3 | grep failed
-# printf "$DIVIDER[Compiling + Running 'Test4']\n"
-# javac -Xlint:rawtypes,unchecked Test4.java; java Test4 | grep failed
+printf "$DIVIDER[Compiling + Running 'Test4']\n"
+javac -Xlint:rawtypes,unchecked Test4.java; java Test4 | grep failed
 # printf "$DIVIDER[Compiling + Running 'Test5']\n"
 # javac -Xlint:rawtypes,unchecked Test5.java; java Test5 | grep failed
 # printf "$DIVIDER[Compiling + Running 'Test6']\n"

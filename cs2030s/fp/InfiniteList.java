@@ -1,6 +1,8 @@
 package cs2030s.fp;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * For lazy evaluation of values that are expensive to produce.
@@ -15,6 +17,8 @@ public class InfiniteList<T> {
   private final Lazy<Maybe<T>> head;
   /** Lazily evaluted tail value. */
   private final Lazy<InfiniteList<T>> tail;
+  /** Cached sentinel instance, to mark the end of InfiniteList. */
+  private static final InfiniteList<?> SENTINEL = new Sentinel();
 
   /**
    * To initialise an InfiniteList with no head nor tail values.
@@ -139,14 +143,33 @@ public class InfiniteList<T> {
     );
   }
 
+  /**
+   * Returns a sentinel, which denotes the end of an InfiniteList.
+   *
+   * @param <T> The generic type of the returned InfiniteList.
+   * @return The sentinel.
+   */
   public static <T> InfiniteList<T> sentinel() {
-    // TODO
-    return new InfiniteList<>();
+    @SuppressWarnings("unchecked")
+    InfiniteList<T> output = (InfiniteList<T>) InfiniteList.SENTINEL;
+    return output;
   }
 
+  /**
+   * Returns a new InfiniteList that's a finite copy of 'this' with a
+   * length less than/equals to 'n'.
+   *
+   * @param n The number of elements in the returned finite InfiniteList.
+   * @return A finite InfiniteList copy.
+   */
   public InfiniteList<T> limit(long n) {
-    // TODO
-    return new InfiniteList<>();
+    return n <= 0
+        ? InfiniteList.sentinel()
+        : new InfiniteList<>(
+            this.head,
+            this.tail
+                .map(x -> x.limit(this.isHeadNone() ? n : n - 1))
+        );
   }
 
   public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate) {
@@ -154,6 +177,11 @@ public class InfiniteList<T> {
     return new InfiniteList<>();
   }
 
+  /**
+   * Returns whether 'this' is a 'Sentinel' instance, which is always false.
+   *
+   * @return Always false.
+   */
   public boolean isSentinel() {
     return false;
   }
@@ -168,12 +196,117 @@ public class InfiniteList<T> {
     return 0;
   }
 
+  /**
+   * Evalutes all the elements in this InfiniteList, and returns them 
+   * in a 'List' in the same order.
+   *
+   * @return A 'List' of all the elements in this InfiniteList.
+   */
   public List<T> toList() {
-    // TODO
-    return List.of();
+    List<T> output = new ArrayList<>();
+    InfiniteList<T> curr = this;
+    while (!curr.isSentinel()) {
+      output.add(curr.head());
+      curr = curr.tail();
+    }
+    return output;
   }
 
+  /**
+   * Returns the string representation of this InfiniteList. If the element
+   * has not been evaluated before, it'd be shown as "?".
+   *
+   * @return The string representation of this InfiniteList.
+   */
   public String toString() {
     return "[" + this.head + " " + this.tail + "]";
+  }
+
+  
+  // ============================ Nested Classes ============================
+
+  private static class Sentinel extends InfiniteList<Object> {
+    /**
+     * Returns the string representation of a 'Sentinel', which is "-".
+     *
+     * @return "-".
+     */
+    @Override
+    public String toString() {
+      return "-";
+    }
+
+    /**
+     * Always throws a 'NoSuchElementException', as a 'Sentinel' doesn't
+     * have a head.
+     *
+     * @return Never returns, always throws 'NoSuchElementException'.
+     */
+    @Override
+    public Object head() throws NoSuchElementException {
+      throw new NoSuchElementException();
+    }
+
+    /**
+     * Always throws a 'NoSuchElementException', as a 'Sentinel' doesn't
+     * have a tail.
+     *
+     * @return Never returns, always throws 'NoSuchElementException'.
+     */
+    @Override
+    public InfiniteList<Object> tail() throws NoSuchElementException {
+      throw new NoSuchElementException();
+    }
+
+    /**
+     * Returns whether 'this' is a 'Sentinel' instance, which is always true.
+     *
+     * @return Always true.
+     */
+    @Override
+    public boolean isSentinel() {
+      return true;
+    }
+
+    /**
+     * Always returns a 'Sentinel' as sentinels don't have any elements.
+     * 'InfiniteList.sentinel()' is used for typecasting purposes.
+     *
+     * @return A sentinel.
+     */
+    @Override
+    public <R> InfiniteList<R> map(Transformer<Object, ? extends R> mapper) {
+      return InfiniteList.sentinel();
+    }
+
+    /**
+     * Always returns a 'Sentinel' as sentinels don't have any elements.
+     *
+     * @return A sentinel.
+     */
+    @Override
+    public InfiniteList<Object> filter(BooleanCondition<Object> predicate) {
+      return this;
+    }
+
+    /**
+     * Always returns a 'Sentinel' as sentinels don't have any elements.
+     *
+     * @return A sentinel.
+     */
+    @Override
+    public InfiniteList<Object> limit(long n) {
+      return this;
+    }
+
+    /**
+     * Returns an empty 'List', as sentinels don't have any elements.
+     *
+     * @return An empty 'List'.
+     */
+    @Override
+    public List<Object> toList() {
+      return new ArrayList<>();
+    }
   }
 }
