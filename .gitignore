@@ -8,3 +8,4 @@ partial_test.sh
 MyTest*.java
 docs/
 LoadCs2030sFp.jsh
+LoadTest.jsh
