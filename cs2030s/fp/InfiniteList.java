@@ -79,9 +79,9 @@ public class InfiniteList<T> {
   }
 
   /**
-   * Returns the evaluated head value.
+   * Returns the first evaluated value that isn't equals to 'Maybe.none()'.
    *
-   * @return The evaluated head value.
+   * @return The first evaluated value that's != Maybe.none().
    */
   public T head() {
     return this.head.get()
@@ -89,9 +89,10 @@ public class InfiniteList<T> {
   }
 
   /**
-   * Returns the evaluated tail value, which is another InfiniteList.
+   * Returns the rest of the InfiniteList, whereby the previous element
+   * is not a 'Maybe.none()'.
    *
-   * @return The evaluated tail value.
+   * @return The rest of the InfiniteList, where previous element != Maybe.none().
    */
   public InfiniteList<T> tail() {
     return this.head.get().equals(Maybe.none())
