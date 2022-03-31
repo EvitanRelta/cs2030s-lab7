@@ -172,9 +172,42 @@ public class InfiniteList<T> {
         );
   }
 
+  /**
+   * Returns a new InfiniteList which terminates the moment an element fails
+   * the 'predicate'.
+   *
+   * @param predicate The predicate which determines when to terminate.
+   * @return The new InfiniteList that terminates upon failing the 'predicate'.
+   */
   public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate) {
-    // TODO
-    return new InfiniteList<>();
+    Lazy<Maybe<T>> newHead = Lazy.of(() -> {
+      if (!predicate.test(this.head())) {
+        throw new NoSuchElementException();
+      }
+      return Maybe.some(this.head());
+    });
+
+    return new InfiniteList<>(
+        newHead,
+        Lazy.of(this.whileProducer(predicate))
+    );
+  }
+
+  /**
+   * Helper method for generating the 'Producer' for the next tail in 'takeWhile'. 
+   * If the next element (excluding those filtered by 'filter') fails the 'predicate', 
+   * the 'Producer' returns a 'Sentinel', else it continues to recurse.
+   *
+   * @param predicate The predicate from 'takeWhile'.
+   * @return The 'Producer' for the next tail in 'takeWhile'.
+   */
+  private Producer<InfiniteList<T>> whileProducer(BooleanCondition<? super T> predicate) {
+    return () -> predicate.test(this.tail().head())
+        ? new InfiniteList<>(
+            this.tail().head(),
+            this.tail().whileProducer(predicate)
+        )
+        : InfiniteList.sentinel();
   }
 
   /**
@@ -296,6 +329,16 @@ public class InfiniteList<T> {
      */
     @Override
     public InfiniteList<Object> limit(long n) {
+      return this;
+    }
+
+    /**
+     * Always returns a 'Sentinel' as sentinels don't have any elements.
+     *
+     * @return A sentinel.
+     */
+    @Override
+    public InfiniteList<Object> takeWhile(BooleanCondition<Object> predicate) {
       return this;
     }
 
