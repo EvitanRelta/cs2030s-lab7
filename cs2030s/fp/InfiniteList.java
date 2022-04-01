@@ -256,19 +256,7 @@ public class InfiniteList<T> {
    * @return The number of elements.
    */
   public long count() {
-    int output = 0;
-
-    try {
-      InfiniteList<T> curr = this;
-      while (!curr.isSentinel()) {
-        output++;
-        curr = curr.tail();
-      }
-    } catch (Exception e) {
-      output--;
-    }
-
-    return output;
+    return this.reduce(0, (acc, x) -> acc + 1);
   }
 
   /**
