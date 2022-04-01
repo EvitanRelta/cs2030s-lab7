@@ -245,13 +245,13 @@ public class InfiniteList<T> {
    * @return A 'List' of all the elements in this InfiniteList.
    */
   public List<T> toList() {
-    List<T> output = new ArrayList<>();
-    InfiniteList<T> curr = this;
-    while (!curr.isSentinel()) {
-      output.add(curr.head());
-      curr = curr.tail();
-    }
-    return output;
+    return this.reduce(
+        new ArrayList<>(),
+        (list, x) -> {
+          list.add(x);
+          return list;
+        }
+    );
   }
 
   /**
