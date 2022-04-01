@@ -103,15 +103,29 @@ public class InfiniteList<T> {
   }
 
   /**
-   * Returns the rest of the InfiniteList, whereby the previous element
-   * is not a 'Maybe.none()'.
-   *
-   * @return The rest of the InfiniteList, where previous element != Maybe.none().
+   * Returns the next InfiniteList tail that has a head != Maybe.none()
+   * 
+   * @return The next InfiniteList tail with a non-None head.
    */
   public InfiniteList<T> tail() {
-    return this.isHeadNone()
-        ? this.tail.get().tail()
-        : this.tail.get();
+    return this.getNextNonNoneHead()
+        .tail
+        .get()
+        .getNextNonNoneHead();
+  }
+  
+  /**
+   * Helper method for 'tail'. Returns 'this' if head != Maybe.none(),
+   * else continue to recurse on its tail.
+   *
+   * @return 'this' if head != Maybe.none(), else next non-None-head InfiniteList.
+   */
+  protected InfiniteList<T> getNextNonNoneHead() {
+    return !this.isHeadNone()
+        ? this
+        : this.tail
+            .get()
+            .getNextNonNoneHead();
   }
 
   /**
@@ -317,6 +331,17 @@ public class InfiniteList<T> {
     @Override
     public InfiniteList<Object> tail() throws NoSuchElementException {
       throw new NoSuchElementException();
+    }
+
+    /**
+     * Helper method for 'tail'. Returns a sentinel, as sentinels has
+     * no elements.
+     *
+     * @return A sentinel.
+     */
+    @Override
+    protected InfiniteList<Object> getNextNonNoneHead() {
+      return this;
     }
 
     /**
