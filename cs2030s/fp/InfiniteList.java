@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * For lazy evaluation of values that are expensive to produce.
- *
+ * An lazily evaluated infinite linked list, where the next elements are 
+ * generated via a function; either by a 'Producer' via the 'generate' method
+ * or by a 'Transformer' via the 'iterate' method. A 'Stream' rip-off basically.
+ * 
  * @author Tan Zong Zhi, Shaun (Group 16A)
  * @version CS2030S AY 21/22 Sem 2
  *
