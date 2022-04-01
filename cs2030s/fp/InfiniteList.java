@@ -189,35 +189,18 @@ public class InfiniteList<T> {
    * @return The new InfiniteList that terminates upon failing the 'predicate'.
    */
   public InfiniteList<T> takeWhile(BooleanCondition<? super T> predicate) {
-    Lazy<Maybe<T>> newHead = Lazy.of(() -> {
-      if (!predicate.test(this.head())) {
-        throw new NoSuchElementException();
-      }
-      return Maybe.some(this.head());
-    });
-
-    return new InfiniteList<>(
-        newHead,
-        Lazy.of(this.whileProducer(predicate))
-    );
-  }
-
-  /**
-   * Helper method for generating the 'Producer' for the next tail in 'takeWhile'. 
-   * If the next element (excluding those filtered by 'filter') fails the 'predicate', 
-   * the 'Producer' returns a 'Sentinel', else it continues to recurse.
-   *
-   * @param predicate The predicate from 'takeWhile'.
-   * @return The 'Producer' for the next tail in 'takeWhile'.
-   */
-  private Producer<InfiniteList<T>> whileProducer(BooleanCondition<? super T> predicate) {
-    return () -> Maybe.some(this.tail().head())
+    Lazy<Maybe<T>> newHead = Lazy.of(() -> Maybe.some(this.head())
         .filter(predicate)
-        .map(x -> new InfiniteList<>(
-            x,
-            this.tail().whileProducer(predicate)
-        ))
-        .orElseGet(InfiniteList::sentinel);
+    );
+    return new InfiniteList<>(
+      newHead,
+      Lazy.of(() -> newHead.get()
+          .map(unused -> this.tail()
+              .takeWhile(predicate)
+          )
+          .orElseGet(InfiniteList::sentinel)
+      )
+    );
   }
 
   /**
