@@ -85,16 +85,6 @@ public class InfiniteList<T> {
   }
 
   /**
-   * Computes head, and return true if its equals to 'Maybe.none()'.
-   *
-   * @return Whether the computed head is a 'Maybe.none()'.
-   */
-  private boolean isHeadNone() {
-    return this.head.get()
-        .equals(Maybe.none());
-  }
-
-  /**
    * Returns the first evaluated value that isn't equals to 'Maybe.none()'.
    *
    * @return The first evaluated value that's != Maybe.none().
@@ -111,8 +101,7 @@ public class InfiniteList<T> {
    */
   public InfiniteList<T> tail() {
     return this.getNextNonNoneHead()
-        .tail
-        .get()
+        .tail.get()
         .getNextNonNoneHead();
   }
   
@@ -123,11 +112,11 @@ public class InfiniteList<T> {
    * @return 'this' if head != Maybe.none(), else next non-None-head InfiniteList.
    */
   protected InfiniteList<T> getNextNonNoneHead() {
-    return !this.isHeadNone()
-        ? this
-        : this.tail
-            .get()
-            .getNextNonNoneHead();
+    return this.head.get()
+        .map(x -> this)
+        .orElseGet(() -> this.tail.get()
+            .getNextNonNoneHead()
+        );
   }
 
   /**
@@ -179,13 +168,17 @@ public class InfiniteList<T> {
    * @return A finite InfiniteList copy.
    */
   public InfiniteList<T> limit(long n) {
-    return n <= 0
-        ? InfiniteList.sentinel()
-        : new InfiniteList<>(
+    return Maybe.some(n)
+        .filter(x -> x > 0)
+        .map(unused -> new InfiniteList<>(
             this.head,
-            this.tail
-                .map(x -> x.limit(this.isHeadNone() ? n : n - 1))
-        );
+            this.tail.map(x -> x.limit(
+                this.head.get()
+                    .map(unused2 -> n - 1)
+                    .orElse(n)
+            ))
+        ))
+        .orElseGet(InfiniteList::sentinel);
   }
 
   /**
@@ -218,12 +211,13 @@ public class InfiniteList<T> {
    * @return The 'Producer' for the next tail in 'takeWhile'.
    */
   private Producer<InfiniteList<T>> whileProducer(BooleanCondition<? super T> predicate) {
-    return () -> predicate.test(this.tail().head())
-        ? new InfiniteList<>(
-            this.tail().head(),
+    return () -> Maybe.some(this.tail().head())
+        .filter(predicate)
+        .map(x -> new InfiniteList<>(
+            x,
             this.tail().whileProducer(predicate)
-        )
-        : InfiniteList.sentinel();
+        ))
+        .orElseGet(InfiniteList::sentinel);
   }
 
   /**
