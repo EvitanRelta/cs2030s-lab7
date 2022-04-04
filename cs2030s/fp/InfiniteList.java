@@ -224,11 +224,15 @@ public class InfiniteList<T> {
    * @return The value obtained by combining all the elements.
    */
   public <U> U reduce(U identity, Combiner<U, ? super T, U> accumulator) {
-    return this.tail()
-        .reduce(
-            accumulator.combine(identity, this.head()),
-            accumulator
-        );
+    return this.head.get()
+        .map(headValue -> this.tail.get().reduce(
+              accumulator.combine(identity, headValue),
+              accumulator
+        ))
+        .orElseGet(() -> this.tail.get().reduce(
+              identity,
+              accumulator
+        ));
   }
 
   /**
