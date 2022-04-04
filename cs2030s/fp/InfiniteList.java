@@ -100,8 +100,10 @@ public class InfiniteList<T> {
    * @return The next InfiniteList tail with a non-None head.
    */
   public InfiniteList<T> tail() {
-    return this.getNextNonNoneHead()
-        .tail.get()
+    return Maybe.some(this.getNextNonNoneHead())
+        .filter(x -> !x.isSentinel())
+        .map(x -> x.tail.get())
+        .orElseGet(InfiniteList::sentinel)
         .getNextNonNoneHead();
   }
   
