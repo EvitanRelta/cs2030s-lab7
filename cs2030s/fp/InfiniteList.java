@@ -291,6 +291,7 @@ public class InfiniteList<T> {
      * have a head.
      *
      * @return Never returns, always throws 'NoSuchElementException'.
+     * @throws NoSuchElementException Always thrown, as sentinels don't have any elements.
      */
     @Override
     public Object head() throws NoSuchElementException {
@@ -302,6 +303,7 @@ public class InfiniteList<T> {
      * have a tail.
      *
      * @return Never returns, always throws 'NoSuchElementException'.
+     * @throws NoSuchElementException Always thrown, as sentinels don't have any elements.
      */
     @Override
     public InfiniteList<Object> tail() throws NoSuchElementException {
