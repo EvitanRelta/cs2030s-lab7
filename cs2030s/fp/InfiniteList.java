@@ -225,7 +225,7 @@ public class InfiniteList<T> {
    * @param accumulator Binary function for combining the elements.
    * @return The value obtained by combining all the elements.
    */
-  public <U> U reduce(U identity, Combiner<U, ? super T, U> accumulator) {
+  public <U> U reduce(U identity, Combiner<? super U, ? super T, U> accumulator) {
     return this.head.get()
         .map(headValue -> this.tail.get().reduce(
               accumulator.combine(identity, headValue),
@@ -379,7 +379,7 @@ public class InfiniteList<T> {
      * @return The 'identity' param.
      */
     @Override
-    public <U> U reduce(U identity, Combiner<U, Object, U> accumulator) {
+    public <U> U reduce(U identity, Combiner<? super U, Object, U> accumulator) {
       return identity;
     }
 
