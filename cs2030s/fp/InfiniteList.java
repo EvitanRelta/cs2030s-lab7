@@ -157,6 +157,8 @@ public class InfiniteList<T> {
    * @return The sentinel.
    */
   public static <T> InfiniteList<T> sentinel() {
+    // 'InfiniteList.SENTINEL' is final, cannot be modified, and doesn't 
+    // contain any contents. Thus, its safe to typecast.
     @SuppressWarnings("unchecked")
     InfiniteList<T> output = (InfiniteList<T>) InfiniteList.SENTINEL;
     return output;
